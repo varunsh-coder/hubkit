@@ -8,8 +8,12 @@ on:
         branches:
             - $default-branch
 
+permissions: read-all
+
 jobs:
     test:
+        permissions:
+          contents: read
         name: PHP ${{ matrix.php-versions }}
         runs-on: ubuntu-18.04
         strategy:
@@ -20,14 +24,16 @@ jobs:
         steps:
             # —— Setup Github actions 🐙 —————————————————————————————————————————————
             # https://github.com/actions/checkout (official)
+            - name: Harden Runner
+              uses: step-security/harden-runner@917f7d59f22e82a5ddcaef409923426fd7aa6327
             -
                 name: Checkout
-                uses: actions/checkout@v2
+                uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5
 
             # https://github.com/shivammathur/setup-php (community)
             -
                 name: Setup PHP, extensions and composer with shivammathur/setup-php
-                uses: shivammathur/setup-php@v2
+                uses: shivammathur/setup-php@3212f1feafd55735969bda7e73638a7577058e02
                 with:
                     php-version: ${{ matrix.php-versions }}
                     extensions: mbstring, ctype, iconv, bcmath, filter, json
@@ -56,19 +62,23 @@ jobs:
                     cp config.php.dist config.php
                     bin/hubkit.php self-diagnose
     lint:
+        permissions:
+          contents: read
         name: PHP-QA
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
         steps:
+            - name: Harden Runner
+              uses: step-security/harden-runner@917f7d59f22e82a5ddcaef409923426fd7aa6327
             -
                 name: Checkout
-                uses: actions/checkout@v2
+                uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5
 
             # https://github.com/shivammathur/setup-php (community)
             -
                 name: Setup PHP, extensions and composer with shivammathur/setup-php
-                uses: shivammathur/setup-php@v2
+                uses: shivammathur/setup-php@3212f1feafd55735969bda7e73638a7577058e02
                 with:
                     php-version: '7.4'
                     extensions: mbstring, ctype, iconv, bcmath, filter, json
