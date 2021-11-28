@@ -1,5 +1,6 @@
 name: Full CI process
 on:
+    workflow_dispatch:
     push:
         branches:
             - $default-branch
